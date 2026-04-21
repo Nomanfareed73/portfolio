@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Noman Fareed — Performance Marketing Specialist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+/* ===== CSS VARIABLES ===== */
+:root{
+  --indigo:#3730a3;
+  --pink:#ec4899;
+  --cyan:#06b6d4;
+  --amber:#f59e0b;
+  --bg:#050510;
+  --bg2:#0a0a1a;
+  --surface:#0f0f23;
+  --border:rgba(255,255,255,0.07);
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
+a{color:inherit;text-decoration:none;}
+img{display:block;max-width:100%;}
+
+/* ===== NOISE TEXTURE ===== */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4;
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--pink),var(--cyan));border-radius:10px;}
+
+/* ===== CUSTOM CURSOR ===== */
+#cursor-dot{
+  position:fixed;width:8px;height:8px;
+  background:var(--cyan);border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 10px var(--cyan),0 0 20px var(--cyan);
+  transition:transform .1s,background .2s;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(6,182,212,0.5);
+  border-radius:50%;pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:transform .18s ease,width .2s,height .2s,border-color .2s;
+}
+body:hover #cursor-dot{opacity:1;}
+
+/* ===== LOADER ===== */
+#loader{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:99990;transition:opacity .6s ease,visibility .6s ease;
+}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-initials{
+  font-family:var(--font-head);font-size:clamp(5rem,12vw,9rem);font-weight:800;
+  background:linear-gradient(135deg,var(--pink),var(--cyan),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:pulse-scale 1.5s ease-in-out infinite;
+  letter-spacing:-.02em;
+}
+@keyframes pulse-scale{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.loader-bar-wrap{
+  width:220px;height:3px;background:rgba(255,255,255,0.07);
+  border-radius:10px;margin-top:2.5rem;overflow:hidden;
+}
+.loader-bar{
+  height:100%;width:0%;border-radius:10px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan),var(--amber));
+  animation:load-progress 2s ease forwards;
+}
+@keyframes load-progress{0%{width:0%;}60%{width:70%;}100%{width:100%;}}
+.loader-label{
+  margin-top:1rem;font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--muted);font-family:var(--font-head);
+}
+
+/* ===== PARTICLE CANVAS ===== */
+#particle-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+}
+
+/* ===== NAVBAR ===== */
+nav{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  padding:1.1rem 5%;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(5,5,16,0.7);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);animation:slide-down .7s .5s ease forwards;
+}
+@keyframes slide-down{to{transform:translateY(0);}}
+.nav-logo{
+  font-family:var(--font-head);font-weight:800;font-size:1.15rem;
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.02em;
+}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{
+  font-family:var(--font-head);font-size:.82rem;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  position:relative;transition:color .2s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  transition:width .3s ease;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.nav-toggle span{width:24px;height:1.5px;background:var(--text);display:block;transition:.3s;}
+
+/* ===== SECTIONS SHARED ===== */
+section{
+  position:relative;z-index:1;
+  padding:clamp(5rem,10vw,8rem) 5%;
+}
+.section-label{
+  font-family:var(--font-head);font-size:.72rem;font-weight:600;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--pink);
+  margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;
+}
+.section-label::before{content:'';width:30px;height:1.5px;background:var(--pink);}
+.section-title{
+  font-family:var(--font-head);font-size:clamp(2rem,4vw,3rem);font-weight:800;
+  line-height:1.1;margin-bottom:3rem;color:#fff;
+}
+
+/* ===== HERO ===== */
+#hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding-top:8rem;
+}
+.hero-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+  width:100%;max-width:1400px;margin:0 auto;
+}
+.hero-left{}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);
+  padding:.35rem .9rem;border-radius:100px;margin-bottom:2rem;
+  font-size:.78rem;font-weight:500;color:var(--cyan);letter-spacing:.05em;
+  animation:fade-up .7s 1.2s ease both;
+}
+.hero-tag::before{
+  content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  animation:blink 1.5s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.hero-name{
+  font-family:var(--font-head);font-size:clamp(3rem,7vw,6rem);font-weight:800;
+  line-height:.95;letter-spacing:-.03em;margin-bottom:1.5rem;
+  animation:fade-up .7s 1.4s ease both;
+}
+.shimmer-text{
+  background:linear-gradient(135deg,#fff 20%,var(--pink) 40%,var(--cyan) 60%,var(--amber) 80%,#fff 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{0%{background-position:100% 50%;}100%{background-position:-100% 50%;}}
+.hero-title{
+  font-family:var(--font-head);font-size:clamp(.9rem,1.5vw,1.1rem);font-weight:500;
+  color:var(--muted);letter-spacing:.04em;margin-bottom:2rem;
+  animation:fade-up .7s 1.6s ease both;
+}
+.hero-desc{
+  font-size:clamp(.9rem,1.2vw,1.05rem);color:var(--muted);line-height:1.75;
+  max-width:520px;margin-bottom:2.5rem;
+  animation:fade-up .7s 1.8s ease both;
+}
+.hero-stats{
+  display:flex;gap:2.5rem;margin-bottom:2.5rem;
+  animation:fade-up .7s 2s ease both;
+}
+.stat-item{display:flex;flex-direction:column;}
+.stat-num{
+  font-family:var(--font-head);font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,var(--pink),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-lbl{font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.1rem;}
+.hero-ctas{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  animation:fade-up .7s 2.2s ease both;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.8rem;border-radius:100px;
+  background:linear-gradient(135deg,var(--pink),var(--indigo));
+  font-family:var(--font-head);font-size:.85rem;font-weight:600;
+  color:#fff;letter-spacing:.05em;border:none;cursor:none;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 0 25px rgba(236,72,153,0.3);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(236,72,153,0.5);}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.8rem;border-radius:100px;
+  background:transparent;border:1px solid var(--border);
+  font-family:var(--font-head);font-size:.85rem;font-weight:600;
+  color:var(--text);letter-spacing:.05em;cursor:none;
+  transition:border-color .2s,background .2s;
+}
+.btn-outline:hover{border-color:var(--cyan);background:rgba(6,182,212,0.07);}
+
+/* ===== 3D FLOATING CARD ===== */
+.hero-right{
+  display:flex;justify-content:center;align-items:center;
+  animation:fade-up .7s 1.5s ease both;
+}
+.card-3d-wrap{
+  perspective:1000px;
+}
+.card-3d{
+  width:340px;height:420px;
+  background:linear-gradient(135deg,var(--surface),rgba(55,48,163,0.2));
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px;padding:2.5rem;
+  position:relative;overflow:hidden;
+  animation:float-rotate 8s ease-in-out infinite;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05);
+  transform-style:preserve-3d;
+}
+@keyframes float-rotate{
+  0%{transform:rotateY(-5deg) rotateX(3deg) translateY(0);}
+  25%{transform:rotateY(5deg) rotateX(-3deg) translateY(-12px);}
+  50%{transform:rotateY(-3deg) rotateX(5deg) translateY(-20px);}
+  75%{transform:rotateY(4deg) rotateX(-2deg) translateY(-8px);}
+  100%{transform:rotateY(-5deg) rotateX(3deg) translateY(0);}
+}
+.card-3d::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(236,72,153,0.1),transparent,rgba(6,182,212,0.1));
+  opacity:.7;
+}
+.card-glow{
+  position:absolute;top:-40px;right:-40px;width:180px;height:180px;
+  background:radial-gradient(circle,rgba(236,72,153,0.25),transparent 70%);
+  border-radius:50%;
+}
+.card-avatar{
+  width:70px;height:70px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--indigo));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:1.6rem;font-weight:800;color:#fff;
+  margin-bottom:1.5rem;position:relative;z-index:1;
+  box-shadow:0 0 25px rgba(236,72,153,0.4);
+}
+.card-name{
+  font-family:var(--font-head);font-size:1.25rem;font-weight:700;
+  color:#fff;margin-bottom:.3rem;position:relative;z-index:1;
+}
+.card-role{font-size:.8rem;color:var(--cyan);margin-bottom:1.5rem;position:relative;z-index:1;letter-spacing:.05em;}
+.card-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.8rem;position:relative;z-index:1;}
+.card-tag{
+  padding:.25rem .7rem;border-radius:100px;font-size:.7rem;font-weight:500;
+  border:1px solid;letter-spacing:.04em;
+}
+.card-tag.pink{color:var(--pink);border-color:rgba(236,72,153,0.3);background:rgba(236,72,153,0.07);}
+.card-tag.cyan{color:var(--cyan);border-color:rgba(6,182,212,0.3);background:rgba(6,182,212,0.07);}
+.card-tag.amber{color:var(--amber);border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.07);}
+.card-divider{width:100%;height:1px;background:var(--border);margin-bottom:1.5rem;position:relative;z-index:1;}
+.card-metric{display:flex;justify-content:space-between;position:relative;z-index:1;}
+.card-m-item{text-align:center;}
+.card-m-val{
+  font-family:var(--font-head);font-size:1.4rem;font-weight:700;
+  background:linear-gradient(135deg,var(--cyan),var(--indigo));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.card-m-lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.1rem;}
+
+/* ===== MARQUEE ===== */
+.marquee-section{
+  padding:2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;position:relative;z-index:1;
+}
+.marquee-track{
+  display:flex;gap:3rem;white-space:nowrap;
+  animation:marquee 20s linear infinite;
+}
+.marquee-item{
+  display:flex;align-items:center;gap:.7rem;
+  font-family:var(--font-head);font-size:.85rem;font-weight:500;
+  color:var(--muted);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;
+}
+.marquee-dot{width:5px;height:5px;border-radius:50%;background:var(--pink);}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%)}}
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+.stagger-1{transition-delay:.1s!important;}
+.stagger-2{transition-delay:.2s!important;}
+.stagger-3{transition-delay:.3s!important;}
+.stagger-4{transition-delay:.4s!important;}
+.stagger-5{transition-delay:.5s!important;}
+
+/* ===== ABOUT ===== */
+#about{background:linear-gradient(to bottom,transparent,rgba(55,48,163,0.05),transparent);}
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+  max-width:1200px;margin:0 auto;
+}
+.about-text p{
+  font-size:1.05rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem;
+}
+.about-text p span{color:var(--text);font-weight:500;}
+.about-highlights{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem;
+}
+.highlight-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem 1.4rem;transition:border-color .3s,transform .3s;
+}
+.highlight-card:hover{border-color:rgba(236,72,153,0.3);transform:translateY(-3px);}
+.h-icon{font-size:1.5rem;margin-bottom:.6rem;}
+.h-val{
+  font-family:var(--font-head);font-size:1.4rem;font-weight:700;
+  background:linear-gradient(135deg,var(--pink),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.h-lbl{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+
+/* ===== COMPETENCIES ===== */
+#competencies{}
+.comp-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;
+  max-width:1200px;margin:0 auto;
+}
+.comp-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:1.6rem;position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s;
+}
+.comp-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s ease;
+}
+.comp-card:hover::before{transform:scaleX(1);}
+.comp-card:hover{transform:translateY(-4px);border-color:rgba(6,182,212,0.2);}
+.comp-category{
+  font-family:var(--font-head);font-size:.7rem;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem;
+}
+.comp-items{display:flex;flex-wrap:wrap;gap:.4rem;}
+.comp-pill{
+  padding:.25rem .65rem;border-radius:6px;font-size:.75rem;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  color:var(--text);transition:background .2s,border-color .2s;
+}
+.comp-card:hover .comp-pill{background:rgba(6,182,212,0.07);border-color:rgba(6,182,212,0.2);}
+
+/* ===== EXPERIENCE ===== */
+#experience{}
+.timeline{max-width:900px;margin:0 auto;position:relative;}
+.timeline::before{
+  content:'';position:absolute;left:16px;top:8px;bottom:0;width:1px;
+  background:linear-gradient(to bottom,var(--pink),var(--cyan),transparent);
+}
+.timeline-item{
+  display:flex;gap:2.5rem;margin-bottom:3rem;
+  padding-left:0;
+}
+.tl-dot{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  background:var(--surface);border:2px solid var(--pink);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;
+  box-shadow:0 0 20px rgba(236,72,153,0.3);
+  transition:box-shadow .3s;
+}
+.tl-dot::after{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:var(--pink);animation:tl-pulse 2s infinite;
+}
+@keyframes tl-pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.5);opacity:.4;}}
+.timeline-item:hover .tl-dot{box-shadow:0 0 35px rgba(236,72,153,0.6);}
+.tl-content{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:1.6rem 2rem;flex:1;
+  transition:border-color .3s,transform .3s;
+}
+.tl-content:hover{border-color:rgba(236,72,153,0.2);transform:translateX(5px);}
+.tl-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap;}
+.tl-role{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:#fff;}
+.tl-period{
+  font-size:.72rem;color:var(--cyan);background:rgba(6,182,212,0.1);
+  border:1px solid rgba(6,182,212,0.2);padding:.2rem .7rem;border-radius:100px;
+  white-space:nowrap;font-weight:500;
+}
+.tl-company{font-size:.85rem;color:var(--pink);font-weight:500;margin-bottom:1rem;}
+.tl-bullets{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.tl-bullets li{
+  font-size:.88rem;color:var(--muted);line-height:1.65;
+  padding-left:1.2rem;position:relative;
+}
+.tl-bullets li::before{
+  content:'›';position:absolute;left:0;color:var(--cyan);font-weight:700;
+}
+
+/* ===== SKILLS / BARS ===== */
+#skills{}
+.skills-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+  max-width:1000px;margin:0 auto;
+}
+.skill-group-title{
+  font-family:var(--font-head);font-size:.8rem;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--amber);
+  margin-bottom:1.5rem;
+}
+.skill-item{margin-bottom:1.4rem;}
+.skill-meta{display:flex;justify-content:space-between;margin-bottom:.6rem;}
+.skill-name{font-size:.88rem;font-weight:500;color:var(--text);}
+.skill-pct{font-size:.78rem;color:var(--muted);font-family:var(--font-head);}
+.skill-track{
+  height:5px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;
+}
+.skill-bar{
+  height:100%;width:0%;border-radius:10px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);
+}
+.skill-bar.amber-bar{background:linear-gradient(90deg,var(--amber),var(--pink));}
+.skill-bar.cyan-bar{background:linear-gradient(90deg,var(--cyan),var(--indigo));}
+
+/* ===== ACHIEVEMENTS ===== */
+#achievements{}
+.ach-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;
+  max-width:1200px;margin:0 auto;
+}
+.ach-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:1.8rem;display:flex;gap:1.2rem;align-items:flex-start;
+  transition:transform .3s,border-color .3s;
+  position:relative;overflow:hidden;
+}
+.ach-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--amber),var(--pink));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s ease;
+}
+.ach-card:hover::after{transform:scaleX(1);}
+.ach-card:hover{transform:translateY(-4px);border-color:rgba(245,158,11,0.2);}
+.ach-icon{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(236,72,153,0.1));
+  border:1px solid rgba(245,158,11,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+}
+.ach-text{flex:1;}
+.ach-val{
+  font-family:var(--font-head);font-size:1.3rem;font-weight:700;
+  background:linear-gradient(135deg,var(--amber),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.3rem;
+}
+.ach-desc{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+/* ===== EDUCATION ===== */
+#education{}
+.edu-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;
+  max-width:900px;margin:0 auto;
+}
+.edu-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:1.8rem;transition:border-color .3s,transform .3s;
+  position:relative;overflow:hidden;
+}
+.edu-card::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:0%;
+  background:linear-gradient(to bottom,var(--indigo),var(--pink));
+  transition:height .5s ease;
+}
+.edu-card:hover::before{height:100%;}
+.edu-card:hover{border-color:rgba(55,48,163,0.4);transform:translateY(-3px);}
+.edu-degree{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.5rem;}
+.edu-inst{font-size:.85rem;color:var(--cyan);margin-bottom:.4rem;}
+.edu-period{font-size:.78rem;color:var(--muted);}
+.lang-section{margin-top:4rem;max-width:900px;margin-left:auto;margin-right:auto;}
+.lang-title{font-family:var(--font-head);font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);margin-bottom:1.5rem;}
+.lang-badges{display:flex;gap:.7rem;flex-wrap:wrap;}
+.lang-badge{
+  padding:.5rem 1.2rem;border-radius:100px;font-size:.8rem;font-weight:600;
+  font-family:var(--font-head);letter-spacing:.05em;
+  animation:badge-glow 3s ease-in-out infinite;
+}
+.lang-badge.l1{color:var(--pink);border:1.5px solid rgba(236,72,153,0.4);background:rgba(236,72,153,0.08);}
+.lang-badge.l2{color:var(--cyan);border:1.5px solid rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);animation-delay:.5s;}
+.lang-badge.l3{color:var(--amber);border:1.5px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);animation-delay:1s;}
+@keyframes badge-glow{0%,100%{box-shadow:none;}50%{box-shadow:0 0 15px currentColor;}}
+
+/* ===== CONTACT ===== */
+#contact{
+  background:linear-gradient(to bottom,transparent,rgba(55,48,163,0.05),transparent);
+}
+.contact-inner{
+  max-width:1100px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+}
+.contact-cards{display:flex;flex-direction:column;gap:1rem;}
+.contact-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:1.2rem 1.6rem;display:flex;align-items:center;gap:1rem;
+  transition:transform .3s,border-color .3s;
+}
+.contact-card:hover{transform:translateX(8px);border-color:rgba(6,182,212,0.3);}
+.cc-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.cc-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem;}
+.cc-val{font-size:.9rem;color:var(--text);font-weight:500;}
+.contact-avatar-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;
+}
+.ripple-avatar{
+  position:relative;width:140px;height:140px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ripple-ring{
+  position:absolute;border-radius:50%;border:1.5px solid;
+  animation:ripple-out 3s ease-out infinite;
+  opacity:0;
+}
+.ripple-ring:nth-child(1){width:100%;height:100%;border-color:rgba(236,72,153,0.5);}
+.ripple-ring:nth-child(2){width:130%;height:130%;border-color:rgba(6,182,212,0.35);animation-delay:.7s;}
+.ripple-ring:nth-child(3){width:160%;height:160%;border-color:rgba(245,158,11,0.2);animation-delay:1.4s;}
+@keyframes ripple-out{
+  0%{transform:scale(.7);opacity:.8;}
+  100%{transform:scale(1.1);opacity:0;}
+}
+.avatar-inner{
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,var(--indigo),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:2rem;font-weight:800;color:#fff;
+  position:relative;z-index:1;
+  box-shadow:0 0 40px rgba(236,72,153,0.4);
+}
+.contact-social{display:flex;gap:.8rem;}
+.social-btn{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:border-color .2s,background .2s,transform .2s;
+  cursor:none;
+}
+.social-btn:hover{border-color:var(--cyan);background:rgba(6,182,212,0.1);transform:translateY(-3px);}
+
+/* ===== FOOTER ===== */
+footer{
+  position:relative;z-index:1;padding:2.5rem 5%;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{font-size:.78rem;color:var(--muted);}
+.footer-copy span{
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:600;
+}
+
+/* ===== FADE UP KEYFRAMES ===== */
+@keyframes fade-up{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .about-grid{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:1fr;}
+  .contact-inner{grid-template-columns:1fr;}
+  .contact-avatar-wrap{display:none;}
+  nav .nav-links{display:none;position:fixed;inset:0;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;}
+  nav .nav-links.open{display:flex;}
+  .nav-toggle{display:flex;}
+}
+@media(max-width:600px){
+  .about-highlights{grid-template-columns:1fr;}
+  .hero-stats{gap:1.5rem;}
+  .card-3d{width:280px;height:360px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-initials">NF</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-label">Loading Portfolio</div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">Noman Fareed</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#competencies">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#achievements">Results</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="nav-toggle" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag">Available for Remote Work Worldwide</div>
+      <h1 class="hero-name">
+        <span class="shimmer-text">Noman</span><br/>
+        <span style="color:#fff;">Fareed</span>
+      </h1>
+      <p class="hero-title">Performance Marketing Specialist · Multi-Platform Paid Advertising</p>
+      <p class="hero-desc">4+ years scaling paid campaigns across Meta, Google, TikTok, LinkedIn & Snapchat — delivering $5M+ in client revenue for brands across the US, UK & UAE.</p>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">$5M+</span><span class="stat-lbl">Revenue Generated</span></div>
+        <div class="stat-item"><span class="stat-num">20+</span><span class="stat-lbl">Brands Scaled</span></div>
+        <div class="stat-item"><span class="stat-num">4x</span><span class="stat-lbl">Peak ROAS</span></div>
+      </div>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Let's Connect ↗</a>
+        <a href="#experience" class="btn-outline">View Experience</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="card-3d-wrap">
+        <div class="card-3d">
+          <div class="card-glow"></div>
+          <div class="card-avatar">NF</div>
+          <div class="card-name">Noman Fareed</div>
+          <div class="card-role">Performance Marketing Specialist</div>
+          <div class="card-tags">
+            <span class="card-tag pink">Meta Ads</span>
+            <span class="card-tag cyan">Google Ads</span>
+            <span class="card-tag amber">TikTok Ads</span>
+            <span class="card-tag pink">LinkedIn Ads</span>
+            <span class="card-tag cyan">ROAS Scaling</span>
+            <span class="card-tag amber">CRO</span>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-metric">
+            <div class="card-m-item"><div class="card-m-val">$5M+</div><div class="card-m-lbl">Revenue</div></div>
+            <div class="card-m-item"><div class="card-m-val">4x</div><div class="card-m-lbl">Peak ROAS</div></div>
+            <div class="card-m-item"><div class="card-m-val">4+</div><div class="card-m-lbl">Years Exp.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee-track">
+    <div class="marquee-item"><span class="marquee-dot"></span> Massive Dynamic</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Integrate Sun</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Fast Commerce</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Affinity E-Commerce</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> VBC & EVS</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> US Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> UK Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> UAE Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Meta Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Google Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> TikTok Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> LinkedIn Ads</div>
+    <!-- duplicate for infinite loop -->
+    <div class="marquee-item"><span class="marquee-dot"></span> Massive Dynamic</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Integrate Sun</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Fast Commerce</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Affinity E-Commerce</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> VBC & EVS</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> US Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> UK Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> UAE Markets</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Meta Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Google Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> TikTok Ads</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> LinkedIn Ads</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About Me</div>
+  <div class="about-grid">
+    <div class="about-text reveal-left">
+      <h2 class="section-title">The Strategist<br/>Behind the Numbers</h2>
+      <p>I'm a <span>Performance Marketing Specialist</span> with 4+ years of hands-on experience running and scaling paid ad campaigns across every major platform — Meta, Google, TikTok, LinkedIn, and Snapchat.</p>
+      <p>My work spans <span>hospitality, lifestyle, beauty, wellness, and service-based brands</span> in the US, UK, and UAE — with a track record of turning ad spend into measurable business outcomes.</p>
+      <p>I'm not just an ads manager. I own the full funnel: from <span>audience research and creative strategy</span> to tracking architecture, attribution modeling, and CRO.</p>
+      <div class="about-highlights">
+        <div class="highlight-card reveal stagger-1"><div class="h-icon">🎯</div><div class="h-val">2.5x–4x</div><div class="h-lbl">ROAS Delivered</div></div>
+        <div class="highlight-card reveal stagger-2"><div class="h-icon">📉</div><div class="h-val">20–40%</div><div class="h-lbl">CPA Reduction</div></div>
+        <div class="highlight-card reveal stagger-3"><div class="h-icon">💰</div><div class="h-val">30%+</div><div class="h-lbl">CPL Reduction (B2B)</div></div>
+        <div class="highlight-card reveal stagger-4"><div class="h-icon">🌍</div><div class="h-val">3</div><div class="h-lbl">International Markets</div></div>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="comp-card" style="margin-bottom:1.2rem;">
+        <div class="comp-category">What I Live and Breathe</div>
+        <div class="comp-items">
+          <span class="comp-pill">ROAS Optimization</span>
+          <span class="comp-pill">Creative Strategy</span>
+          <span class="comp-pill">Funnel Building</span>
+          <span class="comp-pill">Attribution Modeling</span>
+          <span class="comp-pill">A/B Testing</span>
+          <span class="comp-pill">Budget Scaling</span>
+          <span class="comp-pill">Conversion Tracking</span>
+          <span class="comp-pill">Audience Segmentation</span>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-category">Market Experience</div>
+        <div class="comp-items">
+          <span class="comp-pill">🇺🇸 United States</span>
+          <span class="comp-pill">🇬🇧 United Kingdom</span>
+          <span class="comp-pill">🇦🇪 UAE / MENA</span>
+          <span class="comp-pill">🇵🇰 Pakistan</span>
+          <span class="comp-pill">DTC E-Commerce</span>
+          <span class="comp-pill">Lead Generation</span>
+          <span class="comp-pill">B2B SaaS</span>
+          <span class="comp-pill">Service Brands</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCIES -->
+<section id="competencies">
+  <div class="section-label">Core Competencies</div>
+  <h2 class="section-title">Full-Stack<br/>Marketing Toolkit</h2>
+  <div class="comp-grid">
+    <div class="comp-card reveal stagger-1">
+      <div class="comp-category">🚀 Paid Platforms</div>
+      <div class="comp-items">
+        <span class="comp-pill">Meta Ads</span>
+        <span class="comp-pill">Google Search</span>
+        <span class="comp-pill">Google Display</span>
+        <span class="comp-pill">YouTube Ads</span>
+        <span class="comp-pill">TikTok Ads</span>
+        <span class="comp-pill">LinkedIn Ads</span>
+        <span class="comp-pill">Snapchat Ads</span>
+        <span class="comp-pill">PMax</span>
+      </div>
+    </div>
+    <div class="comp-card reveal stagger-2">
+      <div class="comp-category">📊 Performance KPIs</div>
+      <div class="comp-items">
+        <span class="comp-pill">ROAS</span>
+        <span class="comp-pill">CPA</span>
+        <span class="comp-pill">CPL</span>
+        <span class="comp-pill">CTR</span>
+        <span class="comp-pill">Conversion Rate</span>
+        <span class="comp-pill">Revenue Attribution</span>
+        <span class="comp-pill">LTV</span>
+        <span class="comp-pill">MQL Quality</span>
+      </div>
+    </div>
+    <div class="comp-card reveal stagger-3">
+      <div class="comp-category">🔬 Tracking & Analytics</div>
+      <div class="comp-items">
+        <span class="comp-pill">Meta Pixel</span>
+        <span class="comp-pill">CAPI</span>
+        <span class="comp-pill">GA4</span>
+        <span class="comp-pill">Google Tag Manager</span>
+        <span class="comp-pill">Triple Whale</span>
+        <span class="comp-pill">Attribution Modeling</span>
+      </div>
+    </div>
+    <div class="comp-card reveal stagger-4">
+      <div class="comp-category">🎨 Creative Strategy</div>
+      <div class="comp-items">
+        <span class="comp-pill">UGC Concepts</span>
+        <span class="comp-pill">VSL</span>
+        <span class="comp-pill">Static Ads</span>
+        <span class="comp-pill">Hook Testing</span>
+        <span class="comp-pill">A/B Testing</span>
+        <span class="comp-pill">Creative Briefs</span>
+        <span class="comp-pill">Angle Frameworks</span>
+      </div>
+    </div>
+    <div class="comp-card reveal stagger-5">
+      <div class="comp-category">⚙️ Campaign Operations</div>
+      <div class="comp-items">
+        <span class="comp-pill">Audience Research</span>
+        <span class="comp-pill">Budget Allocation</span>
+        <span class="comp-pill">Bid Strategy</span>
+        <span class="comp-pill">Funnel Building</span>
+        <span class="comp-pill">CRO</span>
+        <span class="comp-pill">Retargeting</span>
+        <span class="comp-pill">Lookalike Audiences</span>
+      </div>
+    </div>
+    <div class="comp-card reveal stagger-1">
+      <div class="comp-category">🛍️ E-Commerce</div>
+      <div class="comp-items">
+        <span class="comp-pill">Shopify</span>
+        <span class="comp-pill">DTC Funnels</span>
+        <span class="comp-pill">Product Research</span>
+        <span class="comp-pill">Checkout Optimization</span>
+        <span class="comp-pill">Google Shopping</span>
+        <span class="comp-pill">Feed Management</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Skill Proficiency</div>
+  <h2 class="section-title">Platform<br/>Mastery</h2>
+  <div class="skills-grid" id="skills-grid">
+    <div class="reveal-left">
+      <div class="skill-group-title">🎯 Paid Advertising</div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Meta Ads (Facebook / Instagram)</span><span class="skill-pct">96%</span></div><div class="skill-track"><div class="skill-bar" data-width="96"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Google Ads (Search · Shopping · PMax)</span><span class="skill-pct">90%</span></div><div class="skill-track"><div class="skill-bar cyan-bar" data-width="90"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">TikTok Ads</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-bar amber-bar" data-width="88"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">LinkedIn Ads</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-bar" data-width="80"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Snapchat Ads</span><span class="skill-pct">75%</span></div><div class="skill-track"><div class="skill-bar cyan-bar" data-width="75"></div></div></div>
+    </div>
+    <div class="reveal-right">
+      <div class="skill-group-title">📈 Analytics & Strategy</div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Creative Strategy & Testing</span><span class="skill-pct">95%</span></div><div class="skill-track"><div class="skill-bar amber-bar" data-width="95"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">GA4 & Attribution</span><span class="skill-pct">88%</span></div><div class="skill-track"><div class="skill-bar" data-width="88"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Conversion Rate Optimization</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-bar cyan-bar" data-width="85"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">Shopify & E-Commerce</span><span class="skill-pct">92%</span></div><div class="skill-track"><div class="skill-bar" data-width="92"></div></div></div>
+      <div class="skill-item"><div class="skill-meta"><span class="skill-name">B2B Lead Generation</span><span class="skill-pct">87%</span></div><div class="skill-track"><div class="skill-bar amber-bar" data-width="87"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-label">Work History</div>
+  <h2 class="section-title">Experience<br/>Timeline</h2>
+  <div class="timeline">
+    <div class="timeline-item reveal stagger-1">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">Performance Marketer</div>
+          <div class="tl-period">Sep 2025 – Mar 2026</div>
+        </div>
+        <div class="tl-company">Massive Dynamic · Remote</div>
+        <ul class="tl-bullets">
+          <li>Managed multi-platform paid ad campaigns across Meta, Google, TikTok & LinkedIn — optimizing for ROAS, CPA, and lead quality for service and e-commerce clients.</li>
+          <li>Developed and tested ad creatives including UGC-style videos, static assets, and hooks — identifying top-performing concepts for budget scaling.</li>
+          <li>Set up and maintained conversion tracking via Meta CAPI, GTM, and GA4 for accurate attribution and weekly stakeholder reporting.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal stagger-2">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">Lead Generation Manager</div>
+          <div class="tl-period">Apr 2025 – Sep 2025</div>
+        </div>
+        <div class="tl-company">Integrate Sun · USA (Remote)</div>
+        <ul class="tl-bullets">
+          <li>Executed B2B lead generation campaigns across Meta, Google, LinkedIn & TikTok for US service businesses — reducing CPL by 30%+ while improving pipeline quality.</li>
+          <li>Built audience funnels, tested landing pages, and adjusted creative strategies based on performance data to consistently hit CPL targets.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal stagger-3">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">Google Ads Expert</div>
+          <div class="tl-period">Nov 2024 – Sep 2025</div>
+        </div>
+        <div class="tl-company">Integrate Sun · USA (Remote)</div>
+        <ul class="tl-bullets">
+          <li>Managed Search, Display, Shopping, and PMax campaigns — improving CTR, Quality Score, and ROI through structured keyword planning and bid strategy.</li>
+          <li>Produced weekly GA4-based performance reports with actionable scaling recommendations for DTC e-commerce clients.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal stagger-4">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">TikTok Ads Expert</div>
+          <div class="tl-period">Jan 2024 – Jul 2024</div>
+        </div>
+        <div class="tl-company">Fast Commerce by Ahmad Khan · Lahore</div>
+        <ul class="tl-bullets">
+          <li>Launched and scaled TikTok ad campaigns using viral creative strategies, influencer collaborations, and TikTok Pixel for performance tracking.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal stagger-5">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">Facebook Ads Specialist</div>
+          <div class="tl-period">Aug 2023 – Jan 2024</div>
+        </div>
+        <div class="tl-company">Affinity E-Commerce · Multan</div>
+        <ul class="tl-bullets">
+          <li>Built and managed Meta ad campaigns with advanced audience targeting, custom/lookalike audiences, retargeting sequences, and bid optimization across multiple verticals.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item reveal stagger-1">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-role">Shopify Expert</div>
+          <div class="tl-period">Dec 2022 – Jul 2023</div>
+        </div>
+        <div class="tl-company">VBC & EVS · Faisalabad</div>
+        <ul class="tl-bullets">
+          <li>Designed and launched 50+ conversion-optimized Shopify stores with CRO best practices, app integrations, and custom theming.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-label">Key Results</div>
+  <h2 class="section-title">Numbers That<br/>Actually Matter</h2>
+  <div class="ach-grid">
+    <div class="ach-card reveal stagger-1">
+      <div class="ach-icon">💰</div>
+      <div class="ach-text"><div class="ach-val">$5M+</div><div class="ach-desc">Generated in client revenue across 20+ brands through strategic multi-platform paid advertising.</div></div>
+    </div>
+    <div class="ach-card reveal stagger-2">
+      <div class="ach-icon">🚀</div>
+      <div class="ach-text"><div class="ach-val">2.5x–4x ROAS</div><div class="ach-desc">Consistently achieved for US, UK & UAE e-commerce brands across multiple product and service verticals.</div></div>
+    </div>
+    <div class="ach-card reveal stagger-3">
+      <div class="ach-icon">📉</div>
+      <div class="ach-text"><div class="ach-val">20–40% CPA Drop</div><div class="ach-desc">Reduced cost-per-acquisition across Google Ads and Meta campaigns through creative iteration and bid optimization.</div></div>
+    </div>
+    <div class="ach-card reveal stagger-4">
+      <div class="ach-icon">🎯</div>
+      <div class="ach-text"><div class="ach-val">30%+ Lower CPL</div><div class="ach-desc">Cut B2B cost-per-lead while simultaneously improving pipeline quality for US service businesses.</div></div>
+    </div>
+    <div class="ach-card reveal stagger-5">
+      <div class="ach-icon">🏪</div>
+      <div class="ach-text"><div class="ach-val">50+ Stores</div><div class="ach-desc">Designed and launched conversion-optimized Shopify stores with advanced CRO practices and integrations.</div></div>
+    </div>
+    <div class="ach-card reveal stagger-1">
+      <div class="ach-icon">🌍</div>
+      <div class="ach-text"><div class="ach-val">3 Markets</div><div class="ach-desc">Deep platform expertise across US, UK & UAE markets with proven results in each region's unique ad landscape.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">Education</div>
+  <h2 class="section-title">Academic<br/>Background</h2>
+  <div class="edu-grid">
+    <div class="edu-card reveal stagger-1">
+      <div class="edu-degree">BS Medical Laboratory Technology</div>
+      <div class="edu-inst">Government College University, Faisalabad</div>
+      <div class="edu-period">2022 – 2025 · Pakistan</div>
+    </div>
+  </div>
+  <div class="lang-section reveal">
+    <div class="lang-title">Languages</div>
+    <div class="lang-badges">
+      <span class="lang-badge l1">English — Professional</span>
+      <span class="lang-badge l2">Urdu — Native</span>
+      <span class="lang-badge l3">Punjabi — Native</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Get In Touch</div>
+  <h2 class="section-title">Let's Build<br/>Something Big</h2>
+  <div class="contact-inner">
+    <div class="contact-cards">
+      <a href="mailto:nomanfareed7378@gmail.com" class="contact-card reveal stagger-1">
+        <div class="cc-icon">✉️</div>
+        <div><div class="cc-lbl">Email</div><div class="cc-val">nomanfareed7378@gmail.com</div></div>
+      </a>
+      <a href="tel:+923104134523" class="contact-card reveal stagger-2">
+        <div class="cc-icon">📞</div>
+        <div><div class="cc-lbl">Phone / WhatsApp</div><div class="cc-val">+92 310 413 4523</div></div>
+      </a>
+      <div class="contact-card reveal stagger-3">
+        <div class="cc-icon">📍</div>
+        <div><div class="cc-lbl">Location</div><div class="cc-val">Faisalabad, Pakistan · Remote Worldwide</div></div>
+      </div>
+      <a href="https://linkedin.com/in/noman-fareed-marketer" target="_blank" class="contact-card reveal stagger-4">
+        <div class="cc-icon">💼</div>
+        <div><div class="cc-lbl">LinkedIn</div><div class="cc-val">linkedin.com/in/noman-fareed-marketer</div></div>
+      </a>
+      <div class="contact-card reveal stagger-5">
+        <div class="cc-icon">🟢</div>
+        <div><div class="cc-lbl">Availability</div><div class="cc-val">Open to Remote Full-Time & Freelance</div></div>
+      </div>
+    </div>
+    <div class="contact-avatar-wrap reveal-right">
+      <div class="ripple-avatar">
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="avatar-inner">NF</div>
+      </div>
+      <div class="contact-social">
+        <a href="mailto:nomanfareed7378@gmail.com" class="social-btn" title="Email">✉️</a>
+        <a href="https://linkedin.com/in/noman-fareed-marketer" class="social-btn" target="_blank" title="LinkedIn">💼</a>
+        <a href="tel:+923104134523" class="social-btn" title="WhatsApp">📱</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 <span>Noman Fareed</span> · Performance Marketing Specialist</div>
+  <div class="footer-copy" style="color:var(--muted);font-size:.72rem;">Built with passion · Available Worldwide</div>
+</footer>
+
+<!-- JAVASCRIPT -->
+<script>
+/* ===== LOADER ===== */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 2200);
+});
+
+/* ===== CUSTOM CURSOR ===== */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('a,button,.btn-primary,.btn-outline,.social-btn,.contact-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    dot.style.transform = 'translate(-50%,-50%) scale(2)';
+    ring.style.width = '55px';
+    ring.style.height = '55px';
+    ring.style.borderColor = 'rgba(236,72,153,0.7)';
+  });
+  el.addEventListener('mouseleave', () => {
+    dot.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.width = '36px';
+    ring.style.height = '36px';
+    ring.style.borderColor = 'rgba(6,182,212,0.5)';
+  });
+});
+
+/* ===== PARTICLE CANVAS ===== */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COLORS = ['#3730a3','#ec4899','#06b6d4','#f59e0b'];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+    this.r = Math.random() * 2 + 1;
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.alpha = Math.random() * 0.6 + 0.2;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.globalAlpha = this.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+function drawParticles() {
+  ctx.clearRect(0, 0, W, H);
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update();
+    particles[i].draw();
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = particles[i].color;
+        ctx.globalAlpha = (1 - dist / 120) * 0.2;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ===== SCROLL REVEAL ===== */
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ===== SKILL BARS ===== */
+const bars = document.querySelectorAll('.skill-bar');
+const barObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const w = e.target.dataset.width;
+      e.target.style.width = w + '%';
+      barObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+bars.forEach(b => barObserver.observe(b));
+
+/* ===== MOBILE NAV ===== */
+function toggleNav() {
+  document.getElementById('nav-links').classList.toggle('open');
+}
+document.querySelectorAll('#nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('nav-links').classList.remove('open');
+  });
+});
+
+/* ===== SMOOTH ACTIVE NAV ===== */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : '';
+  });
+});
+</script>
+</body>
+</html>
